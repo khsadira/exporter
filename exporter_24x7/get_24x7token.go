@@ -26,14 +26,14 @@ func getToken() (string, error) {
 	if ret {
 		return "", errors.New("access keys are not well formated")
 	}
-	token, err := getTokenID()
+	token, err := getTokenID(0)
 	if err != nil {
 		return "", err
 	}
 	return token, nil
 }
 
-func getTokenID() (string, error) {
+func getTokenID(loop int) (string, error) {
 
 	var tscan tscan
 
@@ -51,7 +51,10 @@ func getTokenID() (string, error) {
 	buf, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(buf, &tscan)
 	if len(tscan.Token) <= 0 {
-		return "", errors.New("token_id wasn't generated")
+		if loop > 15 {
+			return "", errors.New("token_id wasn't generated")
+		}
+		return getTokenID(loop + 1)
 	}
 	return tscan.Token, nil
 }

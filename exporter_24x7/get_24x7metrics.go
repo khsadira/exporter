@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 func GetMetrics() []byte {
@@ -15,7 +16,7 @@ func GetMetrics() []byte {
 		log.Println(err)
 		return ([]byte(""))
 	}
-	js, err := getJSON(token)
+	js, err := getJSON(token, 0)
 	if err != nil {
 		log.Println(err)
 		return ([]byte(""))
@@ -31,7 +32,7 @@ func GetMetrics() []byte {
 	return ret
 }
 
-func getJSON(token string) ([]byte, error) {
+func getJSON(token string, loop int) ([]byte, error) {
 	type Scan struct {
 		Msg string `json:"message"`
 	}
@@ -54,7 +55,11 @@ func getJSON(token string) ([]byte, error) {
 	buf, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(buf, &scan)
 	if scan.Msg != "success" {
-		return []byte(""), errors.New("Json was not well generated")
+		if loop > 30 {
+			return []byte(""), errors.New("Json was not well generated")
+		}
+		time.Sleep(1 * time.Second)
+		return getJSON(token, loop+1)
 	}
 	return buf, nil
 }
