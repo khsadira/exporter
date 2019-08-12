@@ -11,7 +11,7 @@ import (
 func newMetrics(target string) Metrics {
 	var metrics Metrics
 
-	json, err := getJSONID(target)
+	json, err := getJSONID(target, 0)
 	if err != nil {
 		return metrics
 	}
@@ -32,7 +32,7 @@ type scan struct {
 	State string `json:"state"`
 }
 
-func getJSONID(target string) ([]byte, error) {
+func getJSONID(target string, loop int) ([]byte, error) {
 	var scan scan
 	resp, err := http.Post("https://http-observatory.security.mozilla.org/api/v1/analyze?host="+target+"&rescan=true", "", nil)
 	if err != nil {
@@ -46,8 +46,11 @@ func getJSONID(target string) ([]byte, error) {
 	buf, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(buf, &scan)
 	if scan.State != "FINISHED" {
+		if loop > 30 {
+			return []byte(""), errors.New("Loop error while touching the server")
+		}
 		time.Sleep(1 * time.Second)
-		return getJSONID(target)
+		return getJSONID(target, loop+1)
 	}
-	return buf, err
+	return buf, nil
 }
