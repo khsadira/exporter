@@ -8,13 +8,13 @@ import (
 
 func metricsPage(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write([]byte(`<html>
-<head><title>Exporter</title></head>
-<body>
-<h1>Observatory Exporter</h1>
-<p><a href='/metrics/observatory/'>Observatory</a></p>
-<p><a href='/metrics/24x7/'>24x7</a></p>
-</body>
-</html>`))
+		<head><title>Exporter</title></head>
+		<body>
+		<h1>Observatory Exporter</h1>
+		<p><a href='/metrics/observatory/'>Observatory</a></p>
+		<p><a href='/metrics/24x7/'>24x7</a></p>
+		</body>
+		</html>`))
 }
 
 func getObsMetrics(w http.ResponseWriter, r *http.Request) {

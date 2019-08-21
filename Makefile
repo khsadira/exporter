@@ -1,10 +1,9 @@
-GO		:=	GO111MODULE=on go
-FMT		=	gofmt
-pkgs	=	$(shell env GO111MODULE=on $(GO) list -m)
+GO					:=		GO111MODULE=on go
+FMT					=		gofmt
+pkgs				=		$(shell env GO111MODULE=on $(GO) list -m)
 
-#FILE	=
 
-DOCKER_IMAGE_NAME       ?= exporter
+DOCKER_IMAGE_NAME	?=		exporter
 
 all: format build
 
@@ -27,6 +26,7 @@ build:
 docker: all
 	@echo ">> building docker image"
 	@docker build -t $(DOCKER_IMAGE_NAME) .
+	@echo "to run it : docker run -d -p 8080:8080 -e CLIENT_ID_24x7 -e CLIENT_SECRET_24x7 -e REFRESH_TOKEN_24x7 exporter"
 
 fclean:
 	@rm -rf exporter go.sum go.mod
