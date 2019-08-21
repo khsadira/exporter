@@ -49,7 +49,7 @@ func getJSONID(target string, loop int) ([]byte, error) {
 		if loop > 30 {
 			return []byte(""), errors.New("Loop error while touching the server")
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(time.Second / 2)
 		return getJSONID(target, loop+1)
 	}
 	return buf, nil
