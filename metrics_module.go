@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/khsadira/exporter/exporter_24x7"
 	"github.com/khsadira/exporter/exporter_observatory"
+	"github.com/khsadira/exporter/exporter_sfcc"
 	"net/http"
 )
 
@@ -24,5 +25,10 @@ func getObsMetrics(w http.ResponseWriter, r *http.Request) {
 
 func get24x7Metrics(w http.ResponseWriter, r *http.Request) {
 	metrics := exporter_24x7.GetMetrics()
+	w.Write(metrics)
+}
+
+func getSfccMetrics(w http.ResponseWriter, r *http.Request) {
+	metrics := exporter_sfcc.GetMetrics()
 	w.Write(metrics)
 }
